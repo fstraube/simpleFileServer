@@ -30,7 +30,7 @@ const save = async (req, res) => {
 
         const data = JSON.stringify(req.body);
         const directoryPath = __basedir + "/resources/static/assets/uploads/";
-        await fsPromise.writeFile(directoryPath + `${req.body.name}.geojson`, data)
+        await fsPromise.writeFile(directoryPath + `${req.body.name}.txt`, data)
 
         res
             .status(200)
