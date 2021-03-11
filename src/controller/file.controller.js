@@ -45,12 +45,13 @@ const save = async (req, res) => {
 };
 
 const getFileData = (req, res) => {
-    const directoryPath = __basedir + "/resources/static/assets/uploads/Berlin.geojson";
+    const fileName = req.params.name;
+    const directoryPath = __basedir + `/resources/static/assets/uploads/${fileName}.txt`;
     fs.readFile(directoryPath, (err, data) => {
         if (err) {
             res
                 .status(500)
-                .send({ message: "Unable to scan files!" });
+                .send({ message: "Unable to scan file!" });
         }
         res
             .status(200)
