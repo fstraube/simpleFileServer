@@ -29,18 +29,19 @@ const save = async (req, res) => {
     try {
 
         const data = JSON.stringify(req.body);
+        console.log('DATA', data)
         const directoryPath = __basedir + "/resources/static/assets/uploads/";
-        await fsPromise.writeFile(directoryPath + `${req.body.name}.txt`, data)
+        await fsPromise.writeFile(directoryPath + `${data.title}_${data.id}.txt`, data)
 
         res
             .status(200)
             .send({
-                message: "Saved the file successfully: " + `${req.body.name}.geojson`
+                message: "Saved the file successfully: " + `${data.title}_${data.id}.txt`
             });
     } catch (err) {
         res
             .status(500)
-            .send({ message: `Could not save the file: ${req.body.name}.geojson. ${err}` });
+            .send({ message: `Could not save the file: ${data.title}_${data.id}.txt. ${err}` });
     }
 };
 
