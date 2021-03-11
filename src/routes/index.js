@@ -4,8 +4,8 @@ const controller = require("../controller/file.controller");
 
 let routes = (app) => {
   router.post("/upload", controller.upload);
-  router.post("/save", controller.saveFile);
-  router.post("/delete", controller.deleteFile);
+  router.post("/saveFile", controller.saveFile);
+  router.post("/deleteFile", controller.deleteFile);
   router.get("/fileData/:name", controller.getFileData);
   router.get("/listFileData", controller.getListFileData);
   router.get("/files", controller.getListFiles);

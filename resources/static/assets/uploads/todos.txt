@@ -1,6 +1,0 @@
-{
-    "id": "",
-    "title": "UploadTest",
-    "done": false,
-    "timestamp": ""
-}
