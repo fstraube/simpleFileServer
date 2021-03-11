@@ -14,11 +14,9 @@ const upload = async (req, res) => {
       message: 'Uploaded the file successfully: ' + req.file.originalname,
     });
   } catch (err) {
-    res
-      .status(500)
-      .send({
-        message: `Could not upload the file: ${req.file.originalname}. ${err}`,
-      });
+    res.status(500).send({
+      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+    });
   }
 };
 
@@ -32,14 +30,14 @@ const saveFile = async (req, res) => {
     );
 
     res.status(200).send({
-      message: 'Saved the file successfully: ' + `${req.body.title}_${req.body.id}.txt`,
+      message:
+        'Saved the file successfully: ' +
+        `${req.body.title}_${req.body.id}.txt`,
     });
   } catch (err) {
-    res
-      .status(500)
-      .send({
-        message: `Could not save the file: ${req.body.title}_${req.body.id}.txt. ${err}`,
-      });
+    res.status(500).send({
+      message: `Could not save the file: ${req.body.title}_${req.body.id}.txt. ${err}`,
+    });
   }
 };
 
@@ -108,14 +106,10 @@ const deleteFile = async (req, res) => {
   const data = JSON.stringify(req.body);
   const directoryPath =
     __basedir +
-      `/resources/static/assets/uploads/${req.body.title}_${req.body.id}.txt`;
-    
-    console.log(directoryPath);
-
+    `/resources/static/assets/uploads/${req.body.title}_${req.body.id}.txt`;
   try {
-      fs.unlinkSync(directoryPath);
-      res.status(200).send(data);
-  
+    fs.unlinkSync(directoryPath);
+    res.status(200).send(data);
   } catch (error) {
     res.status(500).send({ message: 'Unable to delete file!' });
   }
