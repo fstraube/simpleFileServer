@@ -24,12 +24,11 @@ const upload = async (req, res) => {
     }
 };
 
-const save = async (req, res) => {
+const saveFile = async (req, res) => {
 
     try {
 
         const data = JSON.stringify(req.body);
-        console.log('DATA', data)
         const directoryPath = __basedir + "/resources/static/assets/uploads/";
         await fsPromise.writeFile(directoryPath + `${data.title}_${data.id}.txt`, data)
 
@@ -116,9 +115,31 @@ const download = (req, res) => {
     });
 };
 
+const deleteFile = async (req, res) => {
+    const data = JSON.stringify(req.body);
+    const directoryPath = __basedir + `/resources/static/assets/uploads/${data.title}_${data.id}.txt`;
+
+    try
+    {
+        fs.unlinkSync(directoryPath), then(data => {
+             res
+            .status(200)
+            .send(data);
+        });
+       
+    } catch (error) {
+          res
+                .status(500)
+                .send({ message: "Unable to delete file!" });
+    }
+
+   
+};
+
 module.exports = {
     upload,
-    save,
+    saveFile,
+    deleteFile,
     getFileData,
     getListFileData,
     getListFiles,
