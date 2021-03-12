@@ -5,17 +5,15 @@ const uploadFile = require('../middleware/upload');
 const upload = async (req, res) => {
   try {
     await uploadFile(req, res);
-
     if (req.file == undefined) {
       return res.status(400).send({ message: 'Please upload a file!' });
     }
-
     res.status(200).send({
       message: 'Uploaded the file successfully: ' + req.file.originalname,
     });
-  } catch (err) {
+  } catch (error) {
     res.status(500).send({
-      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+      message: `Could not upload the file: ${req.file.originalname}. ${error.message}`,
     });
   }
 };
@@ -28,90 +26,62 @@ const saveFile = async (req, res) => {
       directoryPath + `${req.body.title}_${req.body.id}.txt`,
       data,
     );
-
     res.status(200).send({
       message:
         'Saved the file successfully: ' +
         `${req.body.title}_${req.body.id}.txt`,
     });
-  } catch (err) {
+  } catch (error) {
     res.status(500).send({
-      message: `Could not save the file: ${req.body.title}_${req.body.id}.txt. ${err}`,
+      message: `Could not save the file: ${req.body.title}_${req.body.id}.txt. ${error.message}`,
     });
   }
 };
 
-const getFileData = (req, res) => {
-  const fileName = req.params.name;
-  const directoryPath =
-    __basedir + `/resources/static/assets/uploads/${fileName}.txt`;
-  fs.readFile(directoryPath, (err, data) => {
-    if (err) {
-      res.status(500).send({ message: 'Unable to scan file!' });
-    }
-    res.status(200).send(data);
-  });
-};
-
 const getListFileData = async (req, res) => {
   const directoryPath = __basedir + '/resources/static/assets/uploads/';
-
-  const files = await fsPromise.readdir(directoryPath);
-  const data = [];
-  await Promise.all(
-    files.map(async (file) => {
-      const fileData = await fsPromise.readFile(directoryPath + file);
-      data.push(JSON.parse(new String(fileData)));
-    }),
-  );
-  res.status(200).send(data);
-};
-
-const getListFiles = (req, res) => {
-  const baseUrl = req.protocol + '://' + req.headers.host + '/files/';
-  const directoryPath = __basedir + '/resources/static/assets/uploads/';
-
-  fs.readdir(directoryPath, function (err, files) {
-    if (err) {
-      res.status(500).send({ message: 'Unable to scan files!' });
-    }
-
-    let fileInfos = [];
-
-    files.forEach((file) => {
-      fileInfos.push({
-        name: file,
-        url: baseUrl + file,
-      });
+  try {
+    const files = await fsPromise.readdir(directoryPath);
+    const data = [];
+    await Promise.all(
+      files.map(async (file) => {
+        const fileData = await fsPromise.readFile(directoryPath + file);
+        data.push(JSON.parse(new String(fileData)));
+      }),
+    );
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).send({
+      message: `Could list file data. ${error.message}`,
     });
-
-    res.status(200).send(fileInfos);
-  });
+  }
 };
 
 const download = (req, res) => {
-  const fileName = req.params.name;
-  const directoryPath = __basedir + '/resources/static/assets/uploads/';
-
-  res.download(directoryPath + fileName, fileName, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: 'Could not download the file. ' + err,
-      });
-    }
-  });
+  const fileName = `${req.params.fileName}`;
+  const filePath = __basedir + `/resources/static/assets/uploads/${fileName}`;
+  try {
+    res.download(filePath, fileName);
+  } catch (error) {
+    res.status(500).send({
+      message: `Could not download the file. ${error.message}`,
+    });
+  }
 };
 
 const deleteFile = async (req, res) => {
-  const data = JSON.stringify(req.body);
+  const fileName = `${req.body.title}_${req.body.id}`;
   const directoryPath =
-    __basedir +
-    `/resources/static/assets/uploads/${req.body.title}_${req.body.id}.txt`;
+    __basedir + `/resources/static/assets/uploads/${fileName}.txt`;
   try {
     fs.unlinkSync(directoryPath);
-    res.status(200).send(data);
+    res.status(200).send({
+      message: `Deleted file ${fileName}.txt successfully!`,
+    });
   } catch (error) {
-    res.status(500).send({ message: 'Unable to delete file!' });
+    res
+      .status(500)
+      .send({ message: `Unable to delete file! ${error.message}` });
   }
 };
 
@@ -119,8 +89,6 @@ module.exports = {
   upload,
   saveFile,
   deleteFile,
-  getFileData,
   getListFileData,
-  getListFiles,
   download,
 };

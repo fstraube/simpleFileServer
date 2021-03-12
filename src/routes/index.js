@@ -6,10 +6,8 @@ let routes = (app) => {
   router.post('/upload', controller.upload);
   router.post('/saveFile', controller.saveFile);
   router.post('/deleteFile', controller.deleteFile);
-  router.get('/fileData/:name', controller.getFileData);
   router.get('/listFileData', controller.getListFileData);
-  router.get('/files', controller.getListFiles);
-  router.get('/files/:name', controller.download);
+  router.get('/download/:fileName', controller.download);
 
   app.use(router);
 };

@@ -1,18 +1,18 @@
-const cors = require("cors");
-const express = require("express");
-const bodyParser = require('body-parser')
+const cors = require('cors');
+const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 
 global.__basedir = __dirname;
 
 var corsOptions = {
-  origin: "*"
+  origin: '*',
 };
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
-const initRoutes = require("./src/routes");
+const initRoutes = require('./src/routes');
 
 app.use(express.urlencoded({ extended: true }));
 initRoutes(app);
